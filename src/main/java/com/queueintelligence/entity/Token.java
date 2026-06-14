@@ -2,7 +2,9 @@ package com.queueintelligence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import com.queueintelligence.entity.enums.TokenStatus;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,7 +36,8 @@ public class Token {
 
     private LocalDateTime servedTime;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TokenStatus status;
 
     private Integer estimatedWait;
 }

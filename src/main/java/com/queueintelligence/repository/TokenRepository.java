@@ -1,12 +1,13 @@
 package com.queueintelligence.repository;
 
 import com.queueintelligence.entity.Token;
+import com.queueintelligence.entity.enums.TokenStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface TokenRepository
-        extends JpaRepository<Token, Long>{
+        extends JpaRepository<Token, Long> {
 
     Long countByQueueQueueId(
             Long queueId);
@@ -14,14 +15,13 @@ public interface TokenRepository
     Long countByQueueQueueIdAndTokenNumberLessThanAndStatus(
             Long queueId,
             Integer tokenNumber,
-            String status
+            TokenStatus status
     );
 
     Optional<Token>
     findFirstByQueueQueueIdAndStatusOrderByTokenNumberAsc(
 
             Long queueId,
-            String status
+            TokenStatus status
     );
-
 }

@@ -6,6 +6,8 @@ import com.queueintelligence.dto.QueueStatusResponse;
 import com.queueintelligence.entity.Counter;
 import com.queueintelligence.entity.Queue;
 import com.queueintelligence.entity.Token;
+import com.queueintelligence.entity.enums.TokenStatus;
+import com.queueintelligence.exception.ResourceNotFoundException;
 import com.queueintelligence.repository.CounterRepository;
 import com.queueintelligence.repository.QueueRepository;
 import com.queueintelligence.repository.UserRepository;
@@ -65,11 +67,13 @@ public class QueueService {
 
         User user = userRepository
                 .findById(request.getUserId())
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
         Queue queue = queueRepository
                 .findById(request.getQueueId())
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Queue not found"));
 
         Long count =
                 tokenRepository.countByQueueQueueId(
@@ -82,7 +86,7 @@ public class QueueService {
                         count.intValue()+1)
                 .joinTime(
                         LocalDateTime.now())
-                .status("WAITING")
+                .status(TokenStatus.WAITING)
                 .estimatedWait(
                         count.intValue()*5)
                 .build();
@@ -98,7 +102,8 @@ public class QueueService {
 
         return tokenRepository
                 .findById(tokenId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Token not found"));
     }
 
     public QueueStatusResponse
@@ -106,7 +111,8 @@ public class QueueService {
 
         Token token = tokenRepository
                 .findById(tokenId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Token not found"));
 
         Long peopleAhead =
                 tokenRepository
@@ -116,8 +122,7 @@ public class QueueService {
                                         .getQueueId(),
 
                                 token.getTokenNumber(),
-
-                                "WAITING"
+                                TokenStatus.WAITING
                         );
 
         return QueueStatusResponse
@@ -129,7 +134,7 @@ public class QueueService {
                 .estimatedWait(
                         peopleAhead.intValue()*5)
                 .status(
-                        token.getStatus())
+                        token.getStatus().name())
                 .build();
     }
 
@@ -142,7 +147,7 @@ public class QueueService {
                         .findFirstByQueueQueueIdAndStatusOrderByTokenNumberAsc(
 
                                 queueId,
-                                "WAITING"
+                                TokenStatus.WAITING
                         )
 
                         .orElse(null);
@@ -153,7 +158,7 @@ public class QueueService {
         }
 
         token.setStatus(
-                "SERVING");
+                TokenStatus.SERVING);
 
         token.setServedTime(
                 LocalDateTime.now());
@@ -172,7 +177,8 @@ public class QueueService {
                 queueRepository
                         .findById(
                                 request.getQueueId())
-                        .orElseThrow();
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("Queue not found"));
 
         Counter counter =
                 Counter.builder()
@@ -200,7 +206,8 @@ public class QueueService {
         Counter counter =
                 counterRepository
                         .findById(counterId)
-                        .orElseThrow();
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("Counter not found"));
 
         counter.setIsActive(false);
 
