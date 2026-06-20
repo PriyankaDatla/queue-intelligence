@@ -97,6 +97,11 @@ public class QueueService {
                 + token.getTokenNumber();
     }
 
+    public List<Token> getUserTokens(Long userId) {
+
+        return tokenRepository.findByUserUserId(userId);
+    }
+
     public Token getTokenStatus(
             Long tokenId){
 

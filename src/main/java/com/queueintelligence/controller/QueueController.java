@@ -80,4 +80,11 @@ public class QueueController {
 
         return queueService.closeCounter(counterId);
     }
+
+    @GetMapping("/tokens/{userId}")
+    public List<Token> getUserTokens(
+            @PathVariable Long userId) {
+
+        return queueService.getUserTokens(userId);
+    }
 }
