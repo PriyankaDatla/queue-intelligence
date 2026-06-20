@@ -8,8 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.queueintelligence.security.JwtAuthenticationFilter;
-
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -26,7 +27,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**")
+                        .requestMatchers(
+                                "/auth/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        )
                         .permitAll()
                         .anyRequest()
                         .authenticated()

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.queueintelligence.dto.CounterRequest;
 
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/queues")
@@ -25,13 +26,11 @@ public class QueueController {
         this.queueService = queueService;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-
     public String createQueue(
-            @RequestBody QueueRequest request){
-
-        return queueService
-                .createQueue(request);
+            @RequestBody QueueRequest request) {
+        return queueService.createQueue(request);
     }
 
     @GetMapping
@@ -42,55 +41,43 @@ public class QueueController {
                 .getAllQueues();
     }
 
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping("/join")
-
     public String joinQueue(
+            @RequestBody JoinQueueRequest request) {
 
-            @RequestBody JoinQueueRequest request){
-
-        return queueService
-                .joinQueue(request);
+        return queueService.joinQueue(request);
     }
 
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @GetMapping("/status/{tokenId}")
+    public QueueStatusResponse getQueueStatus(
+            @PathVariable Long tokenId) {
 
-    public QueueStatusResponse
-    getQueueStatus(
-
-            @PathVariable Long tokenId){
-
-        return queueService
-                .getQueueStatus(tokenId);
+        return queueService.getQueueStatus(tokenId);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/serve-next/{queueId}")
-
     public String serveNext(
+            @PathVariable Long queueId) {
 
-            @PathVariable Long queueId){
-
-        return queueService
-                .serveNextToken(
-                        queueId);
+        return queueService.serveNextToken(queueId);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/counter/open")
-
     public String openCounter(
+            @RequestBody CounterRequest request) {
 
-            @RequestBody CounterRequest request){
-
-        return queueService
-                .openCounter(request);
+        return queueService.openCounter(request);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/counter/close/{counterId}")
-
     public String closeCounter(
+            @PathVariable Long counterId) {
 
-            @PathVariable Long counterId){
-
-        return queueService
-                .closeCounter(counterId);
+        return queueService.closeCounter(counterId);
     }
 }
