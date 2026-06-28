@@ -1,9 +1,6 @@
 package com.queueintelligence.controller;
 
-import com.queueintelligence.dto.CounterRequest;
-import com.queueintelligence.dto.JoinQueueRequest;
-import com.queueintelligence.dto.QueueRequest;
-import com.queueintelligence.dto.QueueStatusResponse;
+import com.queueintelligence.dto.*;
 import com.queueintelligence.entity.Queue;
 import com.queueintelligence.entity.Token;
 import com.queueintelligence.service.QueueService;
@@ -86,5 +83,13 @@ public class QueueController {
             @PathVariable Long userId) {
 
         return queueService.getUserTokens(userId);
+    }
+
+
+    @GetMapping("/analytics")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public AnalyticsResponse getAnalytics() {
+
+        return queueService.getAnalytics();
     }
 }

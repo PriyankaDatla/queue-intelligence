@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface TokenRepository
         extends JpaRepository<Token, Long> {
-
+    Long countByStatus(TokenStatus status);
     Long countByQueueQueueId(
             Long queueId);
     List<Token> findByUserUserId(Long userId);

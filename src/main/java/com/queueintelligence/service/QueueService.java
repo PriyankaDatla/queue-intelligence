@@ -1,8 +1,6 @@
 package com.queueintelligence.service;
 
-import com.queueintelligence.dto.CounterRequest;
-import com.queueintelligence.dto.QueueRequest;
-import com.queueintelligence.dto.QueueStatusResponse;
+import com.queueintelligence.dto.*;
 import com.queueintelligence.entity.Counter;
 import com.queueintelligence.entity.Queue;
 import com.queueintelligence.entity.Token;
@@ -12,7 +10,6 @@ import com.queueintelligence.repository.CounterRepository;
 import com.queueintelligence.repository.QueueRepository;
 import com.queueintelligence.repository.UserRepository;
 import com.queueintelligence.repository.TokenRepository;
-import com.queueintelligence.dto.JoinQueueRequest;
 import com.queueintelligence.entity.User;
 
 
@@ -219,5 +216,16 @@ public class QueueService {
         counterRepository.save(counter);
 
         return "Counter Closed";
+    }
+
+    public AnalyticsResponse getAnalytics() {
+
+        return AnalyticsResponse.builder()
+                .totalQueues(queueRepository.count())
+                .totalCounters(counterRepository.count())
+                .waitingTokens(tokenRepository.countByStatus(TokenStatus.WAITING))
+                .servingTokens(tokenRepository.countByStatus(TokenStatus.SERVING))
+                .completedTokens(tokenRepository.countByStatus(TokenStatus.COMPLETED))
+                .build();
     }
 }
